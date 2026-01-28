@@ -34,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.lunchtray.datasource.DataSource
 import com.example.lunchtray.ui.AccompanimentMenuScreen
@@ -83,12 +84,18 @@ fun LunchTrayApp(
     viewModel: OrderViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
-    // TODO: Create Controller and initialization
+    val backStackEntry by navController.currentBackStackEntryAsState()
 
+    val currentScreen = LaunchTrayScreen.valueOf(
+        backStackEntry?.destination?.route ?: LaunchTrayScreen.Start.name
+    )
 
     Scaffold(
         topBar = {
-            //LunchTrayAppBar()
+            LunchTrayAppBar(
+                currentScreen = currentScreen,
+                canNavigateBack = false
+            )
         }
     ) { innerPadding ->
         val uiState by viewModel.uiState.collectAsState()
@@ -100,7 +107,7 @@ fun LunchTrayApp(
             composable(route = LaunchTrayScreen.Start.name){
                 StartOrderScreen(
                     onStartOrderButtonClicked = {
-                        //TODO: Função de navegação}
+                        navController.navigate(LaunchTrayScreen.Entree.name)
                     }
                 )
             }
