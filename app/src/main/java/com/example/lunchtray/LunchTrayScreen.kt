@@ -35,7 +35,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.lunchtray.datasource.DataSource
+import com.example.lunchtray.ui.AccompanimentMenuScreen
+import com.example.lunchtray.ui.CheckoutScreen
+import com.example.lunchtray.ui.EntreeMenuScreen
 import com.example.lunchtray.ui.OrderViewModel
+import com.example.lunchtray.ui.SideDishMenuScreen
+import com.example.lunchtray.ui.StartOrderScreen
 
 enum class LaunchTrayScreen(@StringRes val title: Int){
     Start(title = R.string.app_name),
@@ -91,10 +97,76 @@ fun LunchTrayApp(
             startDestination = LaunchTrayScreen.Start.name,
             modifier = Modifier.padding(innerPadding)
         ){
-            // TODO: Adicionar rotas para cada tela
             composable(route = LaunchTrayScreen.Start.name){
-
+                StartOrderScreen(
+                    onStartOrderButtonClicked = {
+                        //TODO: Função de navegação}
+                    }
+                )
             }
+
+            composable(route = LaunchTrayScreen.Entree.name){
+                EntreeMenuScreen(
+                    options = DataSource.entreeMenuItems,
+                    onCancelButtonClicked = {
+                        viewModel.resetOrder()
+                        navController.popBackStack(LaunchTrayScreen.Start.name, inclusive = false)
+                    },
+                    onNextButtonClicked = {
+                        navController.navigate(LaunchTrayScreen.SideDish.name)
+                    },
+                    onSelectionChanged = { item ->
+                        viewModel.updateEntree(item)
+                    }
+                )
+            }
+
+            composable(route = LaunchTrayScreen.SideDish.name){
+                SideDishMenuScreen(
+                    options = DataSource.sideDishMenuItems,
+                    onCancelButtonClicked = {
+                        viewModel.resetOrder()
+                        navController.popBackStack(LaunchTrayScreen.Start.name, inclusive = false)
+                    },
+                    onNextButtonClicked = {
+                        navController.navigate(LaunchTrayScreen.Accompaniment.name)
+                    },
+                    onSelectionChanged = { item ->
+                        viewModel.updateSideDish(item)
+                    }
+                )
+            }
+
+            composable(route = LaunchTrayScreen.Accompaniment.name){
+                AccompanimentMenuScreen(
+                    options = DataSource.accompanimentMenuItems,
+                    onCancelButtonClicked = {
+                        viewModel.resetOrder()
+                        navController.popBackStack(LaunchTrayScreen.Start.name, inclusive = false)
+                    },
+                    onNextButtonClicked = {
+                        navController.navigate(LaunchTrayScreen.Checkout.name)
+                    },
+                    onSelectionChanged = { item ->
+                        viewModel.updateAccompaniment(item)
+                    }
+                )
+            }
+
+            composable(route = LaunchTrayScreen.Checkout.name){
+                CheckoutScreen(
+                    orderUiState = uiState,
+                    onNextButtonClicked = {
+                        viewModel.resetOrder()
+                        navController.popBackStack(LaunchTrayScreen.Start.name, inclusive = false)
+                    },
+                    onCancelButtonClicked = {
+                        viewModel.resetOrder()
+                        navController.popBackStack(LaunchTrayScreen.Start.name, inclusive = false)
+                    }
+                )
+            }
+
         }
     }
 }
