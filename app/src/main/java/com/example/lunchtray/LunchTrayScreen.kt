@@ -16,19 +16,23 @@
 package com.example.lunchtray
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -60,7 +64,7 @@ fun LunchTrayAppBar(
     navigateUp: () -> Unit = {},
     modifier: Modifier = Modifier
 ){
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = { Text(stringResource(currentScreen.title)) },
         modifier = modifier,
         navigationIcon = {
@@ -94,7 +98,8 @@ fun LunchTrayApp(
         topBar = {
             LunchTrayAppBar(
                 currentScreen = currentScreen,
-                canNavigateBack = false
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() }
             )
         }
     ) { innerPadding ->
@@ -108,7 +113,14 @@ fun LunchTrayApp(
                 StartOrderScreen(
                     onStartOrderButtonClicked = {
                         navController.navigate(LaunchTrayScreen.Entree.name)
-                    }
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                        start = dimensionResource(R.dimen.padding_medium),
+                        end = dimensionResource(R.dimen.padding_medium),
+                    )
+
                 )
             }
 
@@ -124,7 +136,13 @@ fun LunchTrayApp(
                     },
                     onSelectionChanged = { item ->
                         viewModel.updateEntree(item)
-                    }
+                    },
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(
+                            start = dimensionResource(R.dimen.padding_medium),
+                            end = dimensionResource(R.dimen.padding_medium),
+                        )
                 )
             }
 
@@ -141,6 +159,13 @@ fun LunchTrayApp(
                     onSelectionChanged = { item ->
                         viewModel.updateSideDish(item)
                     }
+                    ,
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(
+                            start = dimensionResource(R.dimen.padding_medium),
+                            end = dimensionResource(R.dimen.padding_medium),
+                        )
                 )
             }
 
@@ -157,6 +182,13 @@ fun LunchTrayApp(
                     onSelectionChanged = { item ->
                         viewModel.updateAccompaniment(item)
                     }
+                    ,
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(
+                            start = dimensionResource(R.dimen.padding_medium),
+                            end = dimensionResource(R.dimen.padding_medium),
+                        )
                 )
             }
 
@@ -171,6 +203,13 @@ fun LunchTrayApp(
                         viewModel.resetOrder()
                         navController.popBackStack(LaunchTrayScreen.Start.name, inclusive = false)
                     }
+                    ,
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .padding(
+                            start = dimensionResource(R.dimen.padding_medium),
+                            end = dimensionResource(R.dimen.padding_medium),
+                        )
                 )
             }
 
